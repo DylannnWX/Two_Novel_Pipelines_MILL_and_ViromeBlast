@@ -1,4 +1,0 @@
-We need two capabilities to run these pipelines: R and local Blast. I strongly recommend local Blast as this is way faster than NCBI server - depending on server traffic and 
-input sequence length, it takes about 1-10min for each Blast on its server. In comparison, we can do 3-10 Blasts per second locally. As we'll be doing a lot of Blasts, please 
-make sure to have your own Blast setup. 
-
