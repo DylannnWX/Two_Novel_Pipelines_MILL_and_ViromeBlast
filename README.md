@@ -13,6 +13,6 @@ Tests the entire genome CDS sequences, or any given set of sequences in a FASTA 
 
 2. Virome Blast 
 
-Tests and quantifies any known or unknown viral infections in a give RNAseq dataset. This is a highly versatile tool and can be applied to organisms other than Aspergillus and mycoviruses - for instance, human Balf (bronchoalveolar lavage fluid) RNAseq samples and potential viral infections, tumor RNAseq samples and potential tumor-inducing viruses, bacteria RNAseq samples and bacteriophages... in the article there is also an example of Covid discovery in a Wuhan patient Balf. Use your imagination!
+Tests and quantifies any known or unknown viral infections in a given RNAseq dataset. This is a highly versatile tool and can be applied to organisms other than Aspergillus and mycoviruses - for instance, human Balf (bronchoalveolar lavage fluid) RNAseq samples and potential viral infections, tumor RNAseq samples and potential tumor-inducing viruses, bacteria RNAseq samples and bacteriophages... in the article there is also an example of Covid discovery in a Wuhan patient Balf. Use your imagination!
 
 Side note: when I was writing the MILL program, initially I wanted to name it Mda5 Internal Ligand Finder, or in short, MILF. This was however rejected by every single PI in my thesis committee, and it was the only time I witness these great scientists reach the same conclusion at the same time. I then renamed it MILL, since we still want to publish the thing for the benefit of our scientific community. The sacrifices we make during grad school... 
