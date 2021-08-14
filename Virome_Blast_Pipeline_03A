@@ -1,0 +1,37 @@
+The first step of detecting known and unknown viral infections is to get the contigs that doesn't belong to the reference genome. For instance, if we have an unknown infection in A.fumigatus, then the virus-originated reads would be within the subset of reads that fail to align to A.fumigatus genome. To reduce noise and increase efficiency, we apply a de-novo assembly so that the overlapping reads are collapsed into contigs - it is much faster this way than Blasting every single of those ~10 million reads.
+
+Steps
+
+1. Obtain RNAseq raw dataset. This can either be directly downloaded as fastq file, or an SRA file (.1). For SRA files, we'd need the SRA toolkit for Fastq-dump. To do that, first we need to download and install the SRA toolkit. Link: (https://trace.ncbi.nlm.nih.gov/Traces/sra/sra.cgi?view=software). 
+
+2. After download, decompress the .zip file, and place the whole folder in a directory of your choice. I use 7z to decompress but anything that opens .zip works. For demonstration purposes, I've put the folder on my desktop (c:\Users\Dylan\Desktop\sratoolkit.2.10.8-win64\bin). Again please change the directory that reflects on your machine.
+
+3. For demonstration purposes, we're converting the SRA file, Af293.1 on my desktop, (c:\Users\Dylan\Desktop\Af293.1) to Fastq, and we want it in the same Desktop target folder. To do that, open Command Prompt (cmd.exe), execute code:
+-------------------------------------------
+
+cd c:\Users\Dylan\Desktop\sratoolkit.2.10.8-win64\bin
+
+-------------------------------------------
+
+4. The above code sets the directory to the SRA folder. Please make sure to change the directory to your own, instead of Dylan's desktop. After this you should see a new file Af293.fastq in the target folder (desktop, or whatever you choose). Execute code:
+-------------------------------------------
+
+fastq-dump --skip-technical  --readids  --dumpbase  --clip  --fasta 0  --outdir "c:\Users\Dylan\Desktop" "c:\Users\Dylan\Desktop\Af293.1"
+
+------------------------------------------
+
+5. Get all the fastq files you want to analyze. Then open Geneious Prime.
+
+6. First download your reference genome. For this demonstration, we're downloading the fasta format A.fumigatus genome from NCBI genome website. Link:(https://www.ncbi.nlm.nih.gov/genome/). Download your own genome. Then in Geneous prime, import the reference genome by "File" -> "Import", and save in a folder.
+ 
+7. In Geneious prime, import the fastq files by "File" -> "Import". Put them in whatever folder you like.
+
+8. Trim the fastq datasets. Select dataset, then "Annotate & Predict" -> "Trim using BBduk" -> Use "All TruSeq, Nextera and PhiX adapters", "Right End", "Kmer length 27", "Maximum Substitutions 1", "Trim Low Quality, both ends, minimum quality 30", "Discard short reads, minimum length 30", "Keep original order".
+
+9. After trimming complete, conduct de-novo assembly of trimmed reads. Select the trimmed reads, then "Tools" -> "Align/Assemble" -> "De Novo Assemble..." -> "Assembler: Tadpole", "Kmer length 20", "Do not trim", "Save Assembly Result" and "Save in sub-folder". For demonstration purpose, we name the folder "Af293 Tadpole".
+
+10. After tadpole assembly, select the assembled reads in the sub-folder, and click "Tools" -> "Align/Assemble" -> "Map to reference". Choose the reference genome that we did in step 6. Use the Geneious Mapper, and recommended sensitivity (Geneous does this automatically), iterate up to 5 times. Name the assembly, and check every option in the result box.
+
+11. After the completion of step 10, open the sub-folder and there is a file of "Unused reads". This is our treasure since the unknown viral sequences would be in here. Click this document, and go to "File" -> "Export" -> "Documents", choose Fasta file format, and save it in a folder of your choice. For demonstration purposes, we're saving it on Dylan's desktop and naming it Af293_unused (C:/Users/Dylan/Desktop/Af293_unused).
+
+12. That's all! Repeat this process for as many RNAseq datasets you want to analyze and get the "unused reads" for all of them. Then we proceed identify unknown viruses by Virome blast in Virome_Blast_Pipeline_03B.
