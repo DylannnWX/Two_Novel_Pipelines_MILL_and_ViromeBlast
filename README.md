@@ -15,4 +15,6 @@ Tests the entire genome CDS sequences, or any given set of sequences in a FASTA 
 
 Tests and quantifies any known or unknown viral infections in a given RNAseq dataset. This is a highly versatile tool and can be applied to organisms other than Aspergillus and mycoviruses - for instance, human Balf (bronchoalveolar lavage fluid) RNAseq samples and potential viral infections, tumor RNAseq samples and potential tumor-inducing viruses, bacteria RNAseq samples and bacteriophages... in the article there is also an example of Covid discovery in a Wuhan patient Balf. Use your imagination!
 
-That would be all. Oh and most importantly, have fun! If you have any questions, feel free to reach me at Dylan.wangxi@gmail.com.
+That would be all. To do MILL, please refer to Initial_Setup_01 and MILL_Pipeline_02. To do virome Blast, please refer to Initial_Setup_01 and Virome_Blast_Pipeline_03. If both, then plz check all three. If you have any questions, feel free to reach me at Dylan.wangxi@gmail.com.
+
+Oh and most importantly, have fun! I certainly had a lot of fun writing the codes while sipping coffee and, for the most part, with the companion of two very quiet cats sleeping beneath the window and enjoying the New England sunshine.
