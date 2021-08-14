@@ -82,20 +82,16 @@ dim(Af293)
 
 -----------------------------
 
-5. We here utilize the Milltoresult function to analyze the example fasta file, Af293. Code:
+6. We here utilize the Milltoresult function to analyze the example fasta file, Af293. Code:
 -----------------------------
 
 Milltoresult(Af293)
 
 -----------------------------
 
-6. Wait for the process to complete. If completed, there should be the same number of files in the RNA, RCRNA, and Blastout folder. In this case, there will be 9630 .txt files in each. Also the stop sign "interrupt R" in R studio should disappear.
+7. Wait for the process to complete. If completed, there should be the same number of files in the RNA, RCRNA, and Blastout folder. In this case, there will be 9630 .txt files in each. Also the stop sign "interrupt R" in R studio should disappear.
 
-7. We then analyze the MILL results with two parameters: percentage sequence identity, and alignment length. For dsRNA structures that induce sufficient Mda5 binding, the mismatch rate should be lower than 20% (>80% sequence identity), and the length should be more than 30nts. Thus 80%, 30 is the minimal. You can change the threshold as you like. This function below, OpenMill, requires three inputs: the fasta file to be analyzed (Af293), the minimal percentage sequence identity, and the minimal alignment length. For instance, if we want the RNA sequences from Af293 with percentage identity higher than 80%, and alignment length longer than 30nts, the input would be OpenMill(Af293, 80, 30). If we want 85% sequence identity and alignment length of 28, the input would then be OpenMill(Af293,85,28). 
-
-After screening for results that satisfy the above input threshold, it also calculates the number of ALU signature in the hits. This is strictly for human genome analysis - if your organism is not Homo sapiens, please ignore this line. Then it returns the number of positive MILL hits, followed by the number of total RNAs, and calculates the avereage number of RNA for one MILL hit by dividing the previous two as a quantification for "Mda5 stimulating potential" for each genome. 
-
-The last step this function does is to combine all the positive MILL hits into one fasta file for further analysis in c:/Finalresult/finalresult.txt, in case we want to double check its structure in RNAfold, or design primers for later analysis. Code:
+8. Copy and paste the below code, the detail of this function will be explained in step 9:
 
 ------------------------------------------------------------------------------------------------------------
 
@@ -184,5 +180,18 @@ cat("No positive hits!", "\n", "Total number of Alu signatures: ", totalc)
 
 ------------------------------------------------------------------------------------------------------
 
-8. That's all! Whew, quite a journey. Hopefully this works for you. I am running a MILL side by side as I'm writing this and it worked on my end; however, if you have any problems running this, please feel free to contact me. 
+9. We then analyze the MILL results with two parameters: percentage sequence identity, and alignment length. For dsRNA structures that induce sufficient Mda5 binding, the mismatch rate should be lower than 20% (>80% sequence identity), and the length should be more than 30nts. Thus 80%, 30 is the minimal. You can change the threshold as you like. This function below, OpenMill, requires three inputs: the fasta file to be analyzed (Af293), the minimal percentage sequence identity, and the minimal alignment length. For instance, if we want the RNA sequences from Af293 with percentage identity higher than 80%, and alignment length longer than 30nts, the input would be OpenMill(Af293, 80, 30). If we want 85% sequence identity and alignment length of 28, the input would then be OpenMill(Af293,85,28). 
+
+After screening for results that satisfy the above input threshold, it also calculates the number of ALU signature in the hits. This is strictly for human genome analysis - if your organism is not Homo sapiens, please ignore this line. Then it returns the number of positive MILL hits, followed by the number of total RNAs, and calculates the avereage number of RNA for one MILL hit by dividing the previous two as a quantification for "Mda5 stimulating potential" for each genome. 
+
+The last step this function does is to combine all the positive MILL hits into one fasta file for further analysis in c:/Finalresult/finalresult.txt, in case we want to double check its structure in RNAfold, or design primers for later analysis. Code:
+
+--------------------------------------------------------------------
+
+OpenMill(Af293, 80, 30)                  # Or whatever threshold you want, like OpenMill(Af293,85,20)... 
+
+--------------------------------------------------------------------
+
+
+10. That's all! Whew, quite a journey. Hopefully this works for you. If you want to do another analysis, simply remove all the files in the folders (c:/RNA, c:/RCRNA, c:/Blastout, c:/Finalresult) and repeat step 4,5,6,7 and 9. I am running a MILL side by side as I'm writing this and it worked on my end; however, if you have any problems running this, please feel free to contact me. 
 
