@@ -1,3 +1,188 @@
 Here you'll find the walkthrough for conducting your own MILL! Please make sure to finish the Initial_Setup_01 before proceeding. 
 Steps:
-1. 
+1. Open Rstudio and install the following packages: ape, phylotools, stringi, stringr. Go to tools -> install packages -> search these four packages and install.
+
+2. Activate these four packages one by one. Code:
+
+----------------------------
+
+library(ape)
+library(phylotools)
+library(stringi)
+library(stringr)
+
+----------------------------
+
+3. Copy and paste the below code, this is a function (Milltoresult) that makes reverse complementary sequence of each RNA, and then Blast it against its original sequence for Mda5-stimulating dsRNA regions. The RNA sequences and their respective reverse complementary sequences are stored in C:/RNA and C:/RCRNA, and the Blast result of each sequence is stored in C:/Blastout. The detailed mechanism of this algorithm is explained in the article. Code:
+
+----------------------------------------------------------------------------------
+
+Milltoresult <- function(fastainput)
+{
+
+RevCompli <- function(fasta) # Here we make the reverse complementary sequence
+{
+Revcomp<-function(seqtext){
+s0 <- stri_reverse(seqtext)
+s1 <- gsub("G","1",s0)
+s2 <- gsub("C","2",s1)
+s3 <- gsub("A","3",s2)
+s4 <- gsub("T","4",s3)
+s5 <- gsub("1","C",s4)
+s6 <- gsub("2","G",s5)
+s7 <- gsub("3","T",s6)
+s8 <- gsub("4","A",s7)
+return(s8)}
+
+Nseq <- nrow(fasta)
+for (i in 1:Nseq)
+{fasta[i,2] = Revcomp(fasta[i,2])}
+return(fasta)
+
+}
+
+RNA <- fastainput
+RCRNA <- RevCompli(fastainput)
+RNAnumber <- nrow(fastainput)
+
+for (i in 1:RNAnumber)
+{RNA[i,1] = paste0(">", RNA[i,1])
+filename = paste0("c:/RNAs/RNA", i, ".txt")
+write.table(RNA[i,],file=filename,sep="\n", row.names = FALSE, col.names = FALSE, quote = FALSE)}
+
+for (i in 1:RNAnumber)
+{RCRNA[i,1] = paste0(">", RCRNA[i,1])
+filename = paste0("c:/RCRNAs/RCRNA", i, ".txt")
+write.table(RCRNA[i,],file=filename,sep="\n", row.names = FALSE, col.names = FALSE, quote = FALSE)}
+
+for (i in 1:RNAnumber)
+{
+filequery =  paste0("c:/RNAs/RNA", i, ".txt")
+filesubject = paste0("c:/RCRNAs/RCRNA", i, ".txt")
+fileresult = paste0("c:/Blastout/Result",i,".txt")
+system2(command = "blastn", args = c("-query", filequery, "-subject", filesubject, "-strand", "plus", "-reward", "2", "-penalty", "-3", "-gapopen", "5", "-gapextend", "2", "-word_size", "11", "-outfmt", "10", "-out", fileresult))
+}
+
+}
+
+-------------------------------------------------------------------
+
+4. Load your genome CDS sequence of interest into R environment. For instance, if we're analyzing Af293 genome on Dylan's desktop (this example analyzes the Af293.fasta on the desktop, please change your file directory accordingly). You can load as many files as you want, please just make sure to empty all the folders described in Initial_Setup_01 step 5 before a new analysis. Also please note that it's case sensitive once it's in R environment. Code:
+----------------------------
+
+Af293 <- read.fasta("c:/users/dylan/desktop/Af293.fasta")
+
+----------------------------
+
+5 (optional). If you want to check how many RNA sequences are in the fasta file, you can use the dim function. For instance, Af293 genome from NCBI has 9630 RNA sequences. It should then return "9630, 2". Code:
+
+-----------------------------
+
+dim(Af293)
+
+-----------------------------
+
+5. We here utilize the Milltoresult function to analyze the example fasta file, Af293. Code:
+-----------------------------
+
+Milltoresult(Af293)
+
+-----------------------------
+
+6. Wait for the process to complete. If completed, there should be the same number of files in the RNA, RCRNA, and Blastout folder. In this case, there will be 9630 .txt files in each. Also the stop sign "interrupt R" in R studio should disappear.
+
+7. We then analyze the MILL results with two parameters: percentage sequence identity, and alignment length. For dsRNA structures that induce sufficient Mda5 binding, the mismatch rate should be lower than 20% (>80% sequence identity), and the length should be more than 30nts. Thus 80%, 30 is the minimal. You can change the threshold as you like. This function below, OpenMill, requires three inputs: the fasta file to be analyzed (Af293), the minimal percentage sequence identity, and the minimal alignment length. For instance, if we want the RNA sequences from Af293 with percentage identity higher than 80%, and alignment length longer than 30nts, the input would be OpenMill(Af293, 80, 30). If we want 85% sequence identity and alignment length of 28, the input would then be OpenMill(Af293,85,28). 
+
+After screening for results that satisfy the above input threshold, it also calculates the number of ALU signature in the hits. This is strictly for human genome analysis - if your organism is not Homo sapiens, please ignore this line. Then it returns the number of positive MILL hits, followed by the number of total RNAs, and calculates the avereage number of RNA for one MILL hit by dividing the previous two as a quantification for "Mda5 stimulating potential" for each genome. 
+
+The last step this function does is to combine all the positive MILL hits into one fasta file for further analysis in c:/Finalresult/finalresult.txt, in case we want to double check its structure in RNAfold, or design primers for later analysis. Code:
+
+------------------------------------------------------------------------------------------------------------
+
+OpenMill <- function(inputfasta, seqidentity, alignlength)
+{
+RNAnumber <- nrow(inputfasta)
+nonemptylist <- c()
+for(m in 1:RNAnumber)
+{
+currentresult = paste0("c:/Blastout/Result",m,".txt")
+if (file.size(currentresult)>0)
+{nonemptylist = append(m,nonemptylist)}
+}
+nonemptylist = rev(nonemptylist)
+
+resultmatrix <- matrix(,RNAnumber,1000)
+numberofhits <- c(rep(0,RNAnumber))
+
+for(m in nonemptylist) for(n in 1:nrow(read.table(paste0("c:/Blastout/Result",m,".txt"),sep=",")))
+{currentresult = paste0("c:/Blastout/Result",m,".txt")
+numberofhits[m] = nrow(read.table(paste0("c:/Blastout/Result",m,".txt"),sep=","))
+
+currentread <- read.table(currentresult, sep=",")
+resultmatrix[m,(2*n-1)]=currentread[n,3]
+resultmatrix[m,(2*n)] = currentread[n,4]
+
+}
+
+finalresult <- matrix(0,RNAnumber,3)
+
+for (i in 1:RNAnumber)
+{finalresult[i,1]=i}
+
+for (m in nonemptylist) for (n in 1:numberofhits[m])
+
+{
+
+if ((resultmatrix[m,(2*n-1)] >seqidentity)&(resultmatrix[m,(2*n)] > alignlength))
+{ 
+finalresult[m,2] = finalresult[m,2]+1
+finalresult[m,3] = finalresult[m,3] + ((resultmatrix[m,(2*n-1)])*(resultmatrix[m,(2*n)])/100)
+}
+finalresult[m,1] = m
+
+finalresult[m,3] = round(finalresult[m,3])
+}
+
+finalpositive <- c()
+for (i in 1:RNAnumber)
+{
+if (finalresult[i,2] > 0) {finalpositive = append(i, finalpositive)}
+}
+finalpositive = rev(finalpositive)
+
+Npositivehits <- length(finalpositive)
+
+if(length(finalpositive>0))
+{
+finalFasta <- data.frame()
+for (i in 1:length(finalpositive))
+{
+finalFasta[i,1] = paste0("\n", ">>","Nhits: ",finalresult[finalpositive[i],2], " Nqualnts:", finalresult[finalpositive[i],3], " RNA #:", finalpositive[i], ", name: ", inputfasta[finalpositive[i],1])
+finalFasta[i,2] = inputfasta[finalpositive[i],2]}
+write.table(finalFasta,file="c:/Finalresult/finalresult.txt",sep="\n", row.names = FALSE, col.names = FALSE, quote = FALSE)
+
+totalc <- 0
+for (i in 1:RNAnumber)
+{totalc = totalc + str_count(inputfasta[i,2], "GGCCGGGCGC")}
+
+positivec <- 0
+for (i in 1:Npositivehits)
+{positivec = positivec + str_count(finalFasta[i,2], "GGCCGGGCGC")}
+
+
+cat("Total number of Alu signatures: ", totalc, "\n", "Number of Alu signatures in positive hits: ", positivec, "\n", "Total number of positive transcripts: ", Npositivehits, "\n", "Number of total RNAs:", RNAnumber, "\n", "Average number of transcripts for one positive hit:", RNAnumber/Npositivehits)
+}
+
+else {
+totalc <- 0
+for (i in 1:RNAnumber)
+{totalc = totalc + str_count(inputfasta[i,2], "GGCCGGGCGC")}
+
+cat("No positive hits!", "\n", "Total number of Alu signatures: ", totalc)
+}
+}
+
+------------------------------------------------------------------------------------------------------
+
+8. That's all! Whew, quite a journey. Hopefully this works for you. I am running a MILL side by side as I'm writing this and it worked on my end; however, if you have any problems running this, please feel free to contact me. 
+
