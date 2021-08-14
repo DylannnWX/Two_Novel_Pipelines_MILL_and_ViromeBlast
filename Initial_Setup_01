@@ -25,6 +25,13 @@ Steps to setup local virome Blast:
    blastn -query "c:/users/dylan/desktop/text.txt" -db "c:/users/dylan/desktop/BlastDB/virome1" -reward 2 -penalty -3 -gapopen 5 -gapextend 2 -word_size 11 -outfmt 10 -evalue 1e-10
    ------------------------------------------------------
    4.3 At least one result should show up and telling that the query sequence matched the Human Herpesvirus 2 sequence - since we made it as a partial sequence of its genome.
+
+5. Create these folders for storing documents (these are to be used in the R function later; if you change the directory here, please change it in the function as well). Before each new analysis, please make sure to empty these folders.
+   5.1 C:/RNAs                # This is to independently store RNA files from input fasta. 
+   5.2 C:/RCRNAs              # This stores the reverse transcribed RNA sequenceses from input fasta for MILL pipeline.
+   5.3 C:/Blastout            # This stores the Blast results for both MILL and Virome blast pipeline (only one pipeline can run at a time, again plz make sure to empty the folder before any new anlysis)
+   5.4 C:/Taxonomy            # This stores the taxonomy results of positive hits from Virome blast pipeline.
+   5.5 C:/Finalresult         # This stores the final result of MILL pipeline by generating all MILL hits into one fasta file, based on the input threshold of dsRNA length and percentage identity.
    
 Viola! Now you have both the local Virome Blast machine and R installed. These are basically all we need to execute the two pipelines. If you want to play with other local blast databases, simply redo step 3 but switch the virus genomes with whatever sequences you want. For instance, bacteria 16s rRNA for "bacteriome", or a collection of known pathogen genomes as "infectome". Endless possibilities!
    
