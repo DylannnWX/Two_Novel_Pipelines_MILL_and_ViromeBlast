@@ -9,10 +9,10 @@ Although you'd find the same message in the article, here's a brief intro of the
 
 1. MILL (Mda5 Internal Ligand Locator)
 
-Tests the entire genome CDS sequences, or any given set of sequences in a FASTA file, for potential Mda5-stimulating secondary structures. Basically screens for reverse complementary elements that can form dsRNA long enough to stimulate Mda5. On my own Asus laptop, it computes 10k sequences in about 7 minutes. The minimal binding requirement is >30nts, <20% mismatch rate. This is from the impressive Mda5 binding kinetics work from Sun Hur lab (if you're from Hur lab, please tell your PI I'm a fan!).
+Tests the entire genome CDS sequences, or any given set of sequences in a FASTA file, for potential Mda5-stimulating secondary structures. Basically screens for reverse complementary elements that can form dsRNA long enough to stimulate Mda5. On my own Asus laptop, it computes 10k sequences in about 7 minutes. The minimal binding requirement is >30nts, <20% mismatch rate. This is from the impressive Mda5 binding kinetics work by Dr. Sun Hur lab (if you're from Hur lab, please tell your PI I'm a fan!).
 
 2. Virome Blast 
 
 Tests and quantifies any known or unknown viral infections in a given RNAseq dataset. This is a highly versatile tool and can be applied to organisms other than Aspergillus and mycoviruses - for instance, human Balf (bronchoalveolar lavage fluid) RNAseq samples and potential viral infections, tumor RNAseq samples and potential tumor-inducing viruses, bacteria RNAseq samples and bacteriophages... in the article there is also an example of Covid discovery in a Wuhan patient Balf. Use your imagination!
 
-That would be all. Oh and most importantly, have fun!
+That would be all. Oh and most importantly, have fun! If you have any questions, feel free to reach me at Dylan.wangxi@gmail.com.
