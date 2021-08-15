@@ -32,6 +32,6 @@ fastq-dump --skip-technical  --readids  --dumpbase  --clip  --fasta 0  --outdir 
 
 10. After tadpole assembly, select the assembled reads in the sub-folder, and click "Tools" -> "Align/Assemble" -> "Map to reference". Choose the reference genome that we did in step 6. Use the Geneious Mapper, and recommended sensitivity (Geneous does this automatically), iterate up to 5 times. Name the assembly, and check every option in the result box.
 
-11. After the completion of step 10, open the sub-folder and there is a file of "Unused reads". This is our treasure since the unknown viral sequences would be in here. Click this document, and go to "File" -> "Export" -> "Documents", choose Fasta file format, and save it in a folder of your choice. For demonstration purposes, we're saving it on Dylan's desktop and naming it Af293_unused (C:/Users/Dylan/Desktop/Af293_unused).
+11. After the completion of step 10, open the sub-folder and there is a file of "Unused reads". This is our treasure since the unknown viral sequences would be in here. Click this document, and go to "File" -> "Export" -> "Documents", choose Fasta file format, and save it in a folder of your choice. For demonstration purposes, we're saving it on Dylan's desktop and naming it Af293_unused (C:/Users/Dylan/Desktop/Af293_unused.fasta).
 
 12. That's all! Repeat this process for as many RNAseq datasets you want to analyze and get the "unused reads" for all of them. Then we proceed identify unknown viruses by Virome blast in Virome_Blast_Pipeline_03B.
