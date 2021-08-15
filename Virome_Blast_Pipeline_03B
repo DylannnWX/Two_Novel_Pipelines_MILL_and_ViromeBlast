@@ -1,1 +1,75 @@
+Congratulations on making this far! Now we screen for known and unknown viral infections in the "usued reads" obtained in 03A. As you've done Initial_Setup_01, the following folders should exist: c:/RNA, c:/RCRNA, c:/Taxonomy. Make sure to empty all these folders every time we do a new analysis. For demonstration purposes, let's say we're analyzing the Af293_unused.fasta on Dylan's desktop (C:/Users/Dylan/Desktop/Af293_unused.fasta). Again, please change the directory accordingly that reflects your file and folder.
 
+Steps:
+
+1. Open Rstudio, and we should already have the four packages installed: ape, phylotools, stringi, stringr. Now we Activate these four libraries. Code:
+-----------------------------------------
+
+library(ape)
+library(phylotools)
+library(stringi)
+library(stringr)
+
+-----------------------------------------
+
+2. Copy & paste the below code. This function returns the Blast result in a form that tells you the taxonomy (subject/virus genome title, percentage identity, E value, alignment length, bitscore) of the virus. I thus named it "Taxoread". Notice to change the directory of the Blast database to your own directory in the code line (system2...."-db", "c:/your own directory/BlastDB/virome1". Code:
+-----------------------------------------
+
+Taxoread <- function(fastainput)
+{
+
+RNA <- fastainput
+
+RNAnumber <- nrow(fastainput)
+
+for (i in 1:RNAnumber)
+{RNA[i,1] = paste0(">", RNA[i,1])
+filename = paste0("c:/RNAs/RNA", i, ".txt")
+write.table(RNA[i,],file=filename,sep="\n", row.names = FALSE, col.names = FALSE, quote = FALSE)}
+
+
+for (i in 1:RNAnumber)
+{
+filequery =  paste0("c:/RNAs/RNA", i, ".txt")
+
+fileresult = paste0("c:/Taxonomy/Result",i,".txt")
+system2(command = "blastn", args = c("-query", filequery, "-db", "c:/users/dylan/desktop/BlastDB/virome1", "-reward", "2", "-penalty", "-3", "-gapopen", "5", "-gapextend", "2", "-word_size", "11", "-evalue", "1e-10", "-outfmt", '"6 stitle pident evalue length bitscore"', "-out", fileresult)) 
+} 
+}
+
+-----------------------------------------
+
+
+3. Load the file(s) to analyze into R. For demonstration, we load the Af293_unused.fasta mentioned above. You can load as many as you want as long as you don't crash the memory. Code:
+--------------------------------------------
+
+Af293_unused <- read.fasta("c:/Users/Dylan/Desktop/Af293_unused.fasta)
+
+--------------------------------------------
+
+4. Now we analyze the unused read by using the function. Wait until the process to finish, when the red stop sign in R studio disappears. If you want, you can also open the c:/RNA, c:/RCRNA, c:/Taxonomy folder to check, but opening these folders will slightly slow down the process. Code:
+--------------------------------------------
+
+Taxoread(Af293_unused)
+
+---------------------------------------------
+
+5. Now we just need to combine the Blast results in c:/Taxonomy. The below code combines all into one file in the c:/Taxonomy folder named "Combined.txt", but you can put it in another folder if you want. Open Command Prompt (cmd.exe), then copy & paste code:
+-----------------------------------------------
+cd c:\taxonomy
+copy Result*.txt Combined.txt
+-----------------------------------------------
+
+6. Open Combined.txt in c:/Taxonomy folder, select all, copy & paste to a new excel spreadsheet. The columns are, from left to right: Virus genome, percentage sequence identity, E value, Alignment length, Bitscore. You can insert a new row at the top with the four column indicators. Now arrange the data by "virus genome", or the first column. After this, all the alignments beloning to the same species would cluster together. There's always an empty line, feel free to delete it - it's an artifact of step 5's copy command. 
+
+7. Now you can plot these. In the article I used a threshold of 90% sequence identity for any confirmation of infection. If it's not 100% then there might be single nucleotide polymorphisms (SNPs), since the query sequences we used were de-novo assembled contigs, and any mismatch means there would be a bunch of reads all pointing to a change of nucleotide. 
+
+8. If nothing reaches over 90% sequence identity, don't just close the spreadsheet - look for hints. For instance, in the paper I used a Blast database prior to Covid-19 sequence curation, and a Virome Blast of a patient in Wuhan exhibited a lot of coronavirus-like infections around 70% - 90% sequence identity (SARS, Bat coronavirus, Camel Coronavirus, Porcine Coronavirus......). This means the patient was infected with something that looks a lot like known coronaviruses but not any of them, which indicates it's a novel coronavirus infection. Use the same strategy, read your Virome blast results and see if there's any potential unknown infections. A lot of times, bacteriophages would show up. This is actually common in RNAseq datasets, as bacteriophages are the single most abundant viruses and they're literally everywhere. Most RNAseq samples are contaminated with a little bit of bacteriophages. I guess that's the end of the journey here! Hope you find something cool and come up with new exciting hypotheses. 
+
+9. If you've found a confirmed infection over 90% sequence identity, congratulations! Now you can analyze the infection level by downloading the virus genome, load it into Geneous Prime with the same folder as your reference genome. For instance, I've identified A.f PmV-1 infection in A.fumigatus RNAseq datasets, so for demonstration, we put A.f PmV-1 genome and A.fumigatus genome into the same folder in Geneous Prime. Now select the trimmed datasets (not after de-novo assembly, this is the file you have in Virome_Blast_Pipeline_03A step 8), and then click "Tools" -> "Align/Assemble" -> "Map to reference", and then choose both the original reference genome and the virus genome as the reference sequence. Use Geneious mapper and sensitivity (Geneious does this automatically), check everything in the Result box, and check "Do not trim" (since we already trimmed it), and click "OK".
+
+10. After completion of mapping to reference, select all the genomes, host and virus (e.g. A.fumigatus and A.f PmV-1, and sometimes virus have segmented genomes), then click "Annotate & Predict" -> "Calculate Expression Levels" -> select "Count as partial matches" for ambiguously matched reads, "CDS" for annotation type -> click "OK". 
+
+11. After the completion of step 10, click on the virus genome, select "Annotations", and you will see the Raw read count, Raw transcript count, RPKM and TPM. 
+
+12. This is totally optional, but you can also design primers based on the virus genome and confirm the infection you found by the magic of NGS data analysis with some good old wet lab stuff like RT-PCR, or even quantify it with RT-qPCR. You can also the whole thing with DNA sequencing datasets, but you'd miss all the viruses without a DNA stage in their life cycles. Anyway, this would be the end of our journey for Virome Blast detection. Wish you all the best and all the cool discoveries!
