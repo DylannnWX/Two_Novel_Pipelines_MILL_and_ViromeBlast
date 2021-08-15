@@ -6,7 +6,7 @@ Steps
 
 2. After download, decompress the .zip file, and place the whole folder in a directory of your choice. I use 7z to decompress but anything that opens .zip works. For demonstration purposes, I've put the folder on my desktop (c:\Users\Dylan\Desktop\sratoolkit.2.10.8-win64\bin). Again please change the directory that reflects on your machine.
 
-3. For demonstration purposes, we're converting the SRA file, Af293.1 on my desktop, (c:\Users\Dylan\Desktop\Af293.1) to Fastq, and we want it in the same Desktop target folder. To do that, open Command Prompt (cmd.exe), execute code:
+3. For demonstration purposes, we're converting the SRA file, Af293.1 on my desktop, (c:\Users\Dylan\Desktop\Af293.1) to Fastq, and we want it in the same Desktop target folder. To do that, open Command Prompt (cmd.exe), execute the below code. Again, please change the directory accordingly so that it reflects your own folder in your own computer.
 -------------------------------------------
 
 cd c:\Users\Dylan\Desktop\sratoolkit.2.10.8-win64\bin
